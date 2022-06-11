@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "442d6087-88dc-4a40-9a1d-8d079763954a",
+		"name": "Twitter clone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10018881"
+	},
+	"item": [
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "Create message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateMessage($input: CreateMessageInput!) {\n  createMessage(input: $input) {\n    id\n    body\n    user {\n      id\n      username\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"body\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas viverra ornare nibh, eget molestie dolor imperdiet at. Integer in suscipit tellus. Sed mi nulla, consectetur in pellentesque et, volutpat quis mauris.\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Messages",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Messages {\n  messages {\n    id\n    body\n    createdAt\n    user {\n      id\n      username\n    }\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Message subscriptions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "subscription NewMessage($input: NewMessageSubscriptionInput!){\n  newMessage(input: $input){\n    _id\n  }\n}",
+								"variables": "{\n    \"input\":{}\n}"
+							}
+						},
+						"url": {
+							"raw": "{{wsHost}}",
+							"host": [
+								"{{wsHost}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Login($input: LoginInput!) {\n  login(input: $input)\n}",
+								"variables": "{\n  \"input\": {\n    \"password\": \"{{password}}\",\n    \"usernameOrEmail\": \"{{email}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const username = pm.variables.replaceIn('{{$randomUserName}}')",
+									"const password = pm.variables.replaceIn('{{$randomPassword}}')",
+									"",
+									"postman.setEnvironmentVariable(\"username\", username);",
+									"postman.setEnvironmentVariable(\"email\", `${username}@example.com`);",
+									"postman.setEnvironmentVariable(\"password\", password);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Register($input: RegisterUserInput!) {\n  register(input: $input) {\n    username\n    email\n  }\n}\n",
+								"variables": "{\n  \"input\": {\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"username\": \"{{username}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Users {\n  users {\n    id\n    username\n    email\n    messages {\n        id\n        body\n    }\n     followers {\n        count\n        items {\n            username\n        }\n    }\n      following{\n        count\n        items {\n            username\n        }\n    }\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Me {\n  me {\n    id\n    username\n    email\n  \n      following{\n        count\n        items {\n            username\n        }\n    }\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Followers",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query Follows($input: UserFollowingFollowsInput!) {\n  follows(input: $input) {\n    _id\n    username\n  }\n}\n",
+								"variables": "{\n  \"input\": {\n    \"username\": \"{{username}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Follow user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation FollowUser($input: FollowUserInput!) {\n  followUser(input: $input){\n    following {\n        count\n        items {\n            username\n        }\n    }\n    followers {\n        count\n        items {\n            username\n        }\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"username\": \"chanelle_marquardt\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UnfollowUser($input: FollowUserInput!) {\n  unfollowUser(input: $input){\n       following {\n        count\n        items {\n            username\n        }\n    }\n    followers {\n        count\n        items {\n            username\n        }\n    }\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"username\": \"chanelle_marquardt\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query User($input: FindUserInput!) {\n  user(input: $input) {\n    id\n    username\n    email\n    followers{\n        count\n        items {\n            username\n        }\n    }\n    messages {\n        body\n    }\n  }\n}\n",
+								"variables": "{\n  \"input\": {\n    \"username\": \"{{username}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{host}}",
+							"host": [
+								"{{host}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
