@@ -19,7 +19,7 @@ It's important to set these options in the tsconfig.json file of our project:
 ## Client
 yarn create next-app --typescript client 
 
-yarn add @graphql-codegen/cli @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-querys -D
+yarn add @graphql-codegen/cli @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-query -D
 
 yarn add graphql react-query
 
